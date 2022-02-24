@@ -8,6 +8,7 @@ import shap
 import lime
 from bokeh.plotting import figure
 from bokeh.models import CategoricalTicker
+import matplotlib.pyplot as plt
 import time
 
 def request_prediction(data, model_uri='http://127.0.0.1:5000/invocations'):
@@ -23,8 +24,12 @@ def request_prediction(data, model_uri='http://127.0.0.1:5000/invocations'):
 
     return response.json()
 
+
 def main():
     """Main script for dashboard"""
+
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
     ### Part 1 : Get Informations for Simulation ###  
     st.sidebar.markdown("<h2 style='text-align: center; color: black; '>Please give your information</h2>", unsafe_allow_html=True)
     
@@ -421,16 +426,38 @@ def main():
             # Shap Force Plot
             explainer = shap.TreeExplainer(model)
             X_test.loc[len(X_test)] = data
-            shap_values = explainer.shap_values(X_test)
-            
-            shap.initjs()
-            shap_force_plot = shap.force_plot(explainer.expected_value[0], shap_values[0][-1:], X_test[-1:], feature_names=X_train.columns)
-            shap_summary_plot = shap.summary_plot(shap_values, X_test, feature_names=X_train.columns, max_display=10)
-            # st.bokeh_chart(shap_force_plot)
-            # st.bokeh_chart(shap_summary_plot)
-            st.pyplot(shap_force_plot)
-            st.pyplot(shap_summary_plot)
+            shap_values = explainer.shap_values(X_test) # joblib.load("shape_values.sav")
 
+            # joblib.dump(shap_values, 'shape_values.sav')
+                        
+            # shap.initjs()
+            shap_force_plot = shap.force_plot(explainer.expected_value[0], shap_values[0][-1:], X_test[-1:],
+                                                feature_names=X_train.columns, matplotlib=True, show=False)
+            
+            shap_summary_plot = shap.summary_plot(shap_values, X_test, feature_names=X_train.columns, max_display=10)
+            
+
+            #force_plot
+            st.markdown("<h3 style='text-align: center; color: black;'>Force Plot</h3>", unsafe_allow_html=True)
+            shap.force_plot(explainer.expected_value[0], shap_values[0][-1:], X_test[-1:],
+                                                feature_names=X_train.columns, matplotlib=True, show=False)
+            st.pyplot()
+
+            # Force plot expander explanations
+            with st.expander("More on force plots"):
+                st.markdown("""
+                    The Force plot shows how each feature has contributed in moving away or towards the base value (average class output of the evaluation dataset) in to the predicted value of the specific instance (inputed on the left side bar) for the predicted class.
+                    Those values are **log odds**: SHAP doesn't support output probabilities for Multiclassification as of now.
+                    The SHAP values displayed are additive. Once the negative values (blue) are substracted from the positive values (pink), the distance from the base value to the output remains.
+                """)
+
+            #summary_plot_bar
+            st.markdown("<h3 style='text-align: center; color: black;'>Summary Plot</h3>", unsafe_allow_html=True)
+            shap.summary_plot(shap_values, X_test, plot_type="bar")
+            st.pyplot()
+
+            # st.pyplot(shap_force_plot)
+            # st.bokeh_chart(shap_force_plot)
 
             ### End of part B : Interpretability ###
 
