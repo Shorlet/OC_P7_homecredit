@@ -417,10 +417,10 @@ def main():
 
             ### Part B : Interpretability ###
 
-            df = pd.read_csv('clean_df')
-            train_df = df[df['TARGET'].notna()]
-            test_df = df[df['TARGET'].isna()]
-            X_train = train_df.drop(columns=['SK_ID_CURR', 'TARGET'])
+            # df = pd.read_csv('clean_df')
+            # train_df = df[df['TARGET'].notna()]
+            test_df = pd.read_csv('clean_df') # df[df['TARGET'].isna()]
+            # X_train = train_df.drop(columns=['SK_ID_CURR', 'TARGET'])
             X_test = test_df.drop(columns=['SK_ID_CURR', 'TARGET'])
 
             # Shap Force Plot
@@ -434,7 +434,7 @@ def main():
             shap_force_plot = shap.force_plot(explainer.expected_value[0], shap_values[0][-1:], X_test[-1:],
                                                 feature_names=X_train.columns, matplotlib=True, show=False)
             
-            shap_summary_plot = shap.summary_plot(shap_values, X_test, feature_names=X_train.columns, max_display=10)
+            shap_summary_plot = shap.summary_plot(shap_values, X_test, feature_names=X_test.columns, max_display=10)
             
 
             #force_plot
