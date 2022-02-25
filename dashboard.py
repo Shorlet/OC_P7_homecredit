@@ -419,7 +419,7 @@ def main():
 
             # df = pd.read_csv('clean_df')
             # train_df = df[df['TARGET'].notna()]
-            test_df = pd.read_csv('clean_df') # df[df['TARGET'].isna()]
+            test_df = pd.read_csv('test_df') # df[df['TARGET'].isna()]
             # X_train = train_df.drop(columns=['SK_ID_CURR', 'TARGET'])
             X_test = test_df.drop(columns=['SK_ID_CURR', 'TARGET'])
 
