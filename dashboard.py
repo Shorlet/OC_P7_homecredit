@@ -432,7 +432,7 @@ def main():
                         
             # shap.initjs()
             shap_force_plot = shap.force_plot(explainer.expected_value[0], shap_values[0][-1:], X_test[-1:],
-                                                feature_names=X_train.columns, matplotlib=True, show=False)
+                                                feature_names=X_test.columns, matplotlib=True, show=False)
             
             shap_summary_plot = shap.summary_plot(shap_values, X_test, feature_names=X_test.columns, max_display=10)
             
@@ -440,7 +440,7 @@ def main():
             #force_plot
             st.markdown("<h3 style='text-align: center; color: black;'>Force Plot</h3>", unsafe_allow_html=True)
             shap.force_plot(explainer.expected_value[0], shap_values[0][-1:], X_test[-1:],
-                                                feature_names=X_train.columns, matplotlib=True, show=False)
+                                                feature_names=X_test.columns, matplotlib=True, show=False)
             st.pyplot()
 
             # Force plot expander explanations
